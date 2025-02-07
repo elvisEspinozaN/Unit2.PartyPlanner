@@ -1,0 +1,25 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+form {
+  width: 250px;
+  margin: 20px auto;
+}
+input,
+textarea,
+button {
+  width: 100%;
+  margin: 5px 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+button {
+  background: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background: darkgreen;
+}
