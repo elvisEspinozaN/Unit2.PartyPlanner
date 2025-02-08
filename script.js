@@ -41,6 +41,46 @@ async function deleteEvent(id) {
   }
 }
 
+async function addEvent(name, description, date, location) {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        description,
+        date: new Date(date).toISOString(),
+        location,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const json = await response.json();
+    fetchAllEvents();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+function addListenerToForm() {
+  const form = document.querySelector("#party-form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    await addEvent(
+      form.name.value,
+      form.description.value,
+      form.date.value,
+      form.location.value
+    );
+
+    form.name.value = "";
+    form.description.value = "";
+    form.date.value = "";
+    form.location.value = "";
+  });
+}
+
 function renderAllEvents() {
   const eventsContainer = document.querySelector("#events-container");
   eventsContainer.innerHTML = "";
@@ -100,6 +140,7 @@ function renderAllEvents() {
 
 async function init() {
   await fetchAllEvents();
+  addListenerToForm();
 }
 
 init();
