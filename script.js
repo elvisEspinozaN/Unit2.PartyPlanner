@@ -29,8 +29,21 @@ async function fetchAllEvents() {
   }
 }
 
+async function deleteEvent(id) {
+  try {
+    console.log(id);
+    await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+    fetchAllEvents();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 function renderAllEvents() {
   const eventsContainer = document.querySelector("#events-container");
+  eventsContainer.innerHTML = "";
   const eventsList = state.events;
 
   if (!eventsList || eventsList.length === 0) {
@@ -67,6 +80,7 @@ function renderAllEvents() {
     deleteButton.addEventListener("click", (e) => {
       try {
         e.preventDefault();
+        deleteEvent(event.id);
       } catch (e) {
         console.log(e);
       }
