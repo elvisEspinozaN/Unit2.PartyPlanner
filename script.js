@@ -4,61 +4,15 @@ const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/2411-FSA-ET-WEB
 const state = {
   events: [],
   guests: [],
+  rsvps: [],
 };
 
 async function init() {
   await fetchAllEvents();
   await fetchAllGuests();
+  await fetchAllRsvps();
   addListenerToForm();
-}
-
-init();
-
-// ==============================
-// EVENTS API
-// ==============================
-
-async function fetchAllEvents() {
-  try {
-    const response = await fetch(`${API_URL}/events`);
-    const json = await response.json();
-    state.events = json.data;
-    renderAllEvents();
-  } catch (e) {
-    console.error("Error fetching events: ", e);
-    return [];
-  }
-}
-
-async function deleteEvent(id) {
-  try {
-    await fetch(`${API_URL}/events/${id}`, {
-      method: "DELETE",
-    });
-    fetchAllEvents();
-  } catch (e) {
-    console.error(`Error deleting event #${id}: `, e);
-  }
-}
-
-async function addEvent(name, description, date, location) {
-  try {
-    const response = await fetch(`${API_URL}/events`, {
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        description,
-        date: new Date(date).toISOString(),
-        location,
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    const json = await response.json();
-    fetchAllEvents();
-  } catch (e) {
-    console.error("Error adding event: ", e);
-  }
+  console.log(state);
 }
 
 function addListenerToForm() {
@@ -139,6 +93,98 @@ function renderAllEvents() {
 }
 
 // ==============================
+// EVENTS API
+// ==============================
+
+async function fetchAllEvents() {
+  try {
+    const response = await fetch(`${API_URL}/events`);
+    const json = await response.json();
+    state.events = json.data;
+    renderAllEvents();
+  } catch (e) {
+    console.error("Error fetching events: ", e);
+    return [];
+  }
+}
+
+async function deleteEvent(id) {
+  try {
+    await fetch(`${API_URL}/events/${id}`, {
+      method: "DELETE",
+    });
+    await fetchAllEvents();
+    renderAllEvents();
+  } catch (e) {
+    console.error(`Error deleting event #${id}: `, e);
+  }
+}
+
+async function addEvent(name, description, date, location) {
+  try {
+    const response = await fetch(`${API_URL}/events`, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        description,
+        date: new Date(date).toISOString(),
+        location,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const json = await response.json();
+    await fetchAllEvents();
+    renderAllEvents();
+  } catch (e) {
+    console.error("Error adding event: ", e);
+  }
+}
+
+// ==============================
+// RSVPS API
+// ==============================
+
+async function fetchAllRsvps() {
+  try {
+    const response = await fetch(`${API_URL}/rsvps`);
+    const json = await response.json();
+    state.rsvps = json.data;
+  } catch (e) {
+    console.error("Error fetching RSVPs: ", e);
+  }
+}
+
+async function deleteRsvp(id) {
+  try {
+    await fetch(`${API_URL}/rsvp/${id}`, {
+      method: "DELETE",
+    });
+    await fetchAllRsvps();
+    renderAllEvents();
+  } catch (e) {
+    console.error(`Error deleting rsvp #${id}`, e);
+  }
+}
+
+async function addRsvp(eventId, guestId) {
+  try {
+    await fetch(`${API_URL}/rsvps`, {
+      method: "POPST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventId,
+        guestId,
+        cohortId: 1653,
+      }),
+    });
+    await fetchAllRsvps();
+  } catch (e) {
+    console.error("Error adding RSVP: ", e);
+  }
+}
+
+// ==============================
 // GUESTS API
 // ==============================
 
@@ -158,7 +204,8 @@ async function deleteGuest(id) {
     await fetch(`${API_URL}/guests/${id}`, {
       method: "DELETE",
     });
-    fetchAllGuests;
+    await fetchAllGuests();
+    renderAllEvents();
   } catch (e) {
     console.error(`Error deleting guest #${id}: `, e);
   }
@@ -182,7 +229,10 @@ async function addGuest(name, email, phone, cohortId) {
 
     if (!response.ok) throw new Error("Failed to add guest");
     await fetchAllGuests();
+    renderAllEvents();
   } catch (e) {
     console.error("Error adding guest: ", e);
   }
 }
+
+init();
