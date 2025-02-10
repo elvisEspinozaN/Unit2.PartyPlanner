@@ -9,30 +9,59 @@
   </head>
   <body>
     <div class="container">
-      <h2>Add a New Party</h2>
-      <form id="party-form">
-        <label for="name">Party Name:</label>
-        <input type="text" id="name" name="name" required />
+      <button id="toggle-form">Add A Guest</button>
 
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required />
+      <div id="party-form-container">
+        <h2>Add a New Party</h2>
+        <form id="party-form">
+          <label for="name">Party Name:</label>
+          <input type="text" id="name" name="name" required />
 
-        <label for="time">Time:</label>
-        <input type="time" id="time" name="time" required />
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date" required />
 
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" required />
+          <label for="time">Time:</label>
+          <input type="time" id="time" name="time" required />
 
-        <label for="description">Description:</label>
-        <textarea
-          id="description"
-          name="description"
-          rows="3"
-          required
-        ></textarea>
+          <label for="location">Location:</label>
+          <input type="text" id="location" name="location" required />
 
-        <button type="submit">Add Party</button>
-      </form>
+          <label for="description">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="3"
+            required
+          ></textarea>
+
+          <button type="submit">Add Party</button>
+        </form>
+      </div>
+
+      <div id="guest-form-container" style="display: none">
+        <h2>Add a Guest</h2>
+        <form id="guest-form">
+          <label for="name">Guest Name:</label>
+          <input type="text" id="guest-name" name="guest-name" required />
+
+          <label for="name">Guest Email:</label>
+          <input type="text" id="guest-email" name="guest-email" required />
+
+          <label for="name">Guest Phone:</label>
+          <input type="text" id="guest-phone" name="guest-phone" required />
+
+          <label for="name">Guest Cohort:</label>
+          <input
+            type="text"
+            id="guest-cohortId"
+            name="guest-cohortId"
+            required
+          />
+
+          <button type="submit">Add Guest</button>
+        </form>
+      </div>
+
       <div id="events-container"></div>
     </div>
   </body>

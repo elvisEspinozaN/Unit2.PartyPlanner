@@ -12,7 +12,26 @@ async function init() {
   await fetchAllGuests();
   await fetchAllRsvps();
   addListenerToForm();
+  toggleFormButton();
   console.log(state);
+}
+
+function toggleFormButton() {
+  const toggleButton = document.querySelector("#toggle-form");
+
+  toggleButton.addEventListener("click", function () {
+    const partyForm = document.querySelector("#party-form-container");
+    const guestForm = document.querySelector("#guest-form-container");
+    if (partyForm.style.display === "none") {
+      partyForm.style.display = "block";
+      guestForm.style.display = "none";
+      toggleButton.textContent = "Add A Guest";
+    } else {
+      partyForm.style.display = "none";
+      guestForm.style.display = "block";
+      toggleButton.textContent = "Add An Event";
+    }
+  });
 }
 
 function addListenerToForm() {
