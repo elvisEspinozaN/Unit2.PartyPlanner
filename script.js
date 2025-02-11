@@ -15,62 +15,8 @@ async function init() {
   addListenerToForm();
   addGuestToForm();
   toggleFormButton();
+  toggleAttendingGuest();
   console.log(state.events);
-}
-
-function toggleFormButton() {
-  const toggleButton = document.querySelector("#toggle-form");
-
-  toggleButton.addEventListener("click", function () {
-    const partyForm = document.querySelector("#party-form-container");
-    const guestForm = document.querySelector("#guest-form-container");
-    if (partyForm.style.display === "none") {
-      partyForm.style.display = "block";
-      guestForm.style.display = "none";
-      toggleButton.textContent = "Add A Guest";
-    } else {
-      partyForm.style.display = "none";
-      guestForm.style.display = "block";
-      toggleButton.textContent = "Add An Event";
-    }
-  });
-}
-
-function addListenerToForm() {
-  const form = document.querySelector("#party-form");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    await addEvent(
-      form.name.value,
-      form.description.value,
-      form.date.value,
-      form.location.value
-    );
-
-    form.name.value = "";
-    form.description.value = "";
-    form.date.value = "";
-    form.location.value = "";
-  });
-}
-
-function addGuestToForm() {
-  const guestForm = document.querySelector("#guest-form");
-
-  guestForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    await addGuest(
-      guestForm.name.value,
-      guestForm.email.value,
-      guestForm.phone.value,
-      guestForm.cohortId.value
-    );
-
-    guestForm.reset();
-  });
 }
 
 function renderAllEvents() {
@@ -133,9 +79,23 @@ function renderAllEvents() {
     attendingGuest.classList.add("guest-list");
 
     const attendingGuestHeading = document.createElement("h4");
+    attendingGuestHeading.classList.add("guest-heading");
     attendingGuestHeading.textContent = `Attending Guests: ${guestAttendingList.length}`;
 
-    attendingGuest.append(attendingGuestHeading);
+    const guestItem = document.createElement("div");
+    guestItem.classList.add("guest-item");
+    guestItem.style.display = "none";
+
+    guestAttendingList.forEach((guest) => {
+      const guestEmail = document.createElement("small");
+      const guestName = document.createElement("span");
+      const breakline = document.createElement("br");
+      guestName.textContent = `${guest.name} `;
+      guestEmail.textContent = `${guest.email}`;
+      guestItem.append(guestName, guestEmail, breakline);
+    });
+
+    attendingGuest.append(attendingGuestHeading, guestItem);
 
     eventCard.append(
       eventName,
@@ -290,6 +250,76 @@ async function addGuest(name, email, phone, cohortId) {
   } catch (e) {
     console.error("Error adding guest: ", e);
   }
+}
+
+// ==============================
+// EVENT LISTENERS
+// ==============================
+
+function toggleAttendingGuest() {
+  document.querySelectorAll(".guest-list").forEach((guestList) => {
+    guestList.addEventListener("click", function () {
+      const guestItem = guestList.querySelector(".guest-item");
+
+      guestItem.style.display =
+        guestItem.style.display === "none" ? "block" : "none";
+    });
+  });
+}
+
+function toggleFormButton() {
+  const toggleButton = document.querySelector("#toggle-form");
+
+  toggleButton.addEventListener("click", function () {
+    const partyForm = document.querySelector("#party-form-container");
+    const guestForm = document.querySelector("#guest-form-container");
+    if (partyForm.style.display === "none") {
+      partyForm.style.display = "block";
+      guestForm.style.display = "none";
+      toggleButton.textContent = "Add A Guest";
+    } else {
+      partyForm.style.display = "none";
+      guestForm.style.display = "block";
+      toggleButton.textContent = "Add An Event";
+    }
+  });
+}
+
+function addListenerToForm() {
+  const form = document.querySelector("#party-form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    await addEvent(
+      form.name.value,
+      form.description.value,
+      form.date.value,
+      form.location.value
+    );
+
+    form.name.value = "";
+    form.description.value = "";
+    form.date.value = "";
+    form.location.value = "";
+  });
+}
+
+function addGuestToForm() {
+  const guestForm = document.querySelector("#guest-form");
+
+  guestForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    await addGuest(
+      guestForm.name.value,
+      guestForm.email.value,
+      guestForm.phone.value,
+      guestForm.cohortId.value
+    );
+
+    guestForm.reset();
+  });
 }
 
 init();
