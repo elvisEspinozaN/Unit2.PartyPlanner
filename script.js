@@ -11,9 +11,11 @@ async function init() {
   await fetchAllEvents();
   await fetchAllGuests();
   await fetchAllRsvps();
+  renderAllEvents();
   addListenerToForm();
+  addGuestToForm();
   toggleFormButton();
-  console.log(state);
+  console.log(state.events);
 }
 
 function toggleFormButton() {
@@ -54,10 +56,29 @@ function addListenerToForm() {
   });
 }
 
+function addGuestToForm() {
+  const guestForm = document.querySelector("#guest-form");
+
+  guestForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    await addGuest(
+      guestForm.name.value,
+      guestForm.email.value,
+      guestForm.phone.value,
+      guestForm.cohortId.value
+    );
+
+    guestForm.reset();
+  });
+}
+
 function renderAllEvents() {
   const eventsContainer = document.querySelector("#events-container");
   eventsContainer.innerHTML = "";
   const eventsList = state.events;
+  const rsvpsList = state.rsvps;
+  const guestList = state.guests;
 
   if (!eventsList || eventsList.length === 0) {
     eventsContainer.innerHTML = "<h2>No Parties Found</h2>";
@@ -99,12 +120,30 @@ function renderAllEvents() {
       }
     });
 
+    // Get RSVPs for this event
+    const eventRsvps = rsvpsList.filter((rsvp) => rsvp.eventId === event.id);
+
+    // Get guest objects
+    const guestAttendingList = eventRsvps.map((rsvp) =>
+      guestList.find((guest) => guest.id === rsvp.guestId)
+    );
+
+    // Create guest list HTML
+    const attendingGuest = document.createElement("div");
+    attendingGuest.classList.add("guest-list");
+
+    const attendingGuestHeading = document.createElement("h4");
+    attendingGuestHeading.textContent = `Attending Guests: ${guestAttendingList.length}`;
+
+    attendingGuest.append(attendingGuestHeading);
+
     eventCard.append(
       eventName,
       eventLocation,
       eventDescription,
       eventDate,
       eventTime,
+      attendingGuest,
       deleteButton
     );
     eventsContainer.append(eventCard);
@@ -117,7 +156,7 @@ function renderAllEvents() {
 
 async function fetchAllEvents() {
   try {
-    const response = await fetch(`${API_URL}/events`);
+    const response = await fetch(`${API_URL}events`);
     const json = await response.json();
     state.events = json.data;
     renderAllEvents();
@@ -141,7 +180,7 @@ async function deleteEvent(id) {
 
 async function addEvent(name, description, date, location) {
   try {
-    const response = await fetch(`${API_URL}/events`, {
+    const response = await fetch(`${API_URL}events`, {
       method: "POST",
       body: JSON.stringify({
         name,
@@ -152,7 +191,6 @@ async function addEvent(name, description, date, location) {
       headers: { "Content-Type": "application/json" },
     });
 
-    const json = await response.json();
     await fetchAllEvents();
     renderAllEvents();
   } catch (e) {
@@ -166,7 +204,7 @@ async function addEvent(name, description, date, location) {
 
 async function fetchAllRsvps() {
   try {
-    const response = await fetch(`${API_URL}/rsvps`);
+    const response = await fetch(`${API_URL}rsvps`);
     const json = await response.json();
     state.rsvps = json.data;
   } catch (e) {
@@ -176,7 +214,7 @@ async function fetchAllRsvps() {
 
 async function deleteRsvp(id) {
   try {
-    await fetch(`${API_URL}/rsvp/${id}`, {
+    await fetch(`${API_URL}rsvp/${id}`, {
       method: "DELETE",
     });
     await fetchAllRsvps();
@@ -188,8 +226,8 @@ async function deleteRsvp(id) {
 
 async function addRsvp(eventId, guestId) {
   try {
-    await fetch(`${API_URL}/rsvps`, {
-      method: "POPST",
+    await fetch(`${API_URL}rsvps`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         eventId,
@@ -209,7 +247,7 @@ async function addRsvp(eventId, guestId) {
 
 async function fetchAllGuests() {
   try {
-    const response = await fetch(`${API_URL}/guests`);
+    const response = await fetch(`${API_URL}guests`);
     const json = await response.json();
     state.guests = json.data;
   } catch (e) {
@@ -220,7 +258,7 @@ async function fetchAllGuests() {
 
 async function deleteGuest(id) {
   try {
-    await fetch(`${API_URL}/guests/${id}`, {
+    await fetch(`${API_URL}guests/${id}`, {
       method: "DELETE",
     });
     await fetchAllGuests();
@@ -240,7 +278,7 @@ async function addGuest(name, email, phone, cohortId) {
     };
 
     // post request
-    const response = await fetch(`${API_URL}/guests`, {
+    const response = await fetch(`${API_URL}guests`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newGuest),
