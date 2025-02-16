@@ -1,47 +1,135 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
+  line-height: 1.5;
+  background: #f5f5f5;
+  padding: 20px;
 }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* form */
 form {
-  width: 250px;
+  width: 100%;
+  max-width: 400px;
   margin: 20px auto;
+  display: grid;
+  gap: 1rem;
 }
+
 input,
 textarea,
 button {
   width: 100%;
-  margin: 5px 5px;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
+
+input:focus,
+textarea:focus {
+  border-color: green;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 128, 0, 0.1);
+}
+
+/* button */
 button {
+  width: auto;
+  padding: 12px 24px;
+  margin: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+}
+
+button[type="submit"] {
   background: green;
   color: white;
-  border: none;
-  cursor: pointer;
-  width: fit-content;
 }
-button:hover {
-  background: darkgreen;
+
+button[type="submit"]:hover {
+  background: #006600;
+  transform: translateY(-1px);
 }
+
 #toggle-form {
-  width: 150px;
+  background: #007bff;
+  color: white;
+  width: 200px;
+  margin: 20px auto;
 }
-.event-card {
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 10px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  background: #fff;
+
+#toggle-form:hover {
+  background: #0056b3;
 }
+
 button[id^="delete-"] {
-  width: 100px;
-  background: red;
+  background: #dc3545;
+  color: white;
 }
+
+button[id^="delete-"]:hover {
+  background: #bb2d3b;
+}
+
+/* event card */
+.event-card {
+  border: 2px solid #eee;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 15px;
+  background: white;
+  transition: transform 0.2s;
+}
+
+.event-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* guesst list */
 .guest-list {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f5f5f5;
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.guest-heading {
+  color: #333;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin: 0 0 10px;
+}
+
+.guest-item {
+  background: white;
+  padding: 10px;
   border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .event-card {
+    margin: 10px 0;
+  }
+
+  button {
+    width: 100%;
+    margin: 8px 0;
+  }
 }

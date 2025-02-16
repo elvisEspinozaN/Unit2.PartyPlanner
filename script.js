@@ -119,7 +119,6 @@ async function fetchAllEvents() {
     const response = await fetch(`${API_URL}events`);
     const json = await response.json();
     state.events = json.data;
-    renderAllEvents();
   } catch (e) {
     console.error("Error fetching events: ", e);
     return [];
@@ -196,6 +195,7 @@ async function addRsvp(eventId, guestId) {
       }),
     });
     await fetchAllRsvps();
+    renderAllEvents();
   } catch (e) {
     console.error("Error adding RSVP: ", e);
   }
